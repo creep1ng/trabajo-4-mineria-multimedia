@@ -1,5 +1,10 @@
 # SFT de Qwen3.5-9B (familia Qwen3) sobre un reglamento ficticio (Opción A: QLoRA local)
 
+> Integrantes:
+> Ricardo Arias
+> Mario Gutiérrez
+
+
 Trabajo 4 de Minería Multimedia. Se hace *supervised fine-tuning* con QLoRA (Unsloth + TRL) de **Qwen3.5-9B** (modelo principal) sobre el reglamento **ficticio** del Laboratorio de Cómputo Acelerado "Nodo Cóndor", y se exporta a GGUF (Q4_K_M y Q8_0) para ejecutarlo en Ollama. Como referencia, el mismo flujo se aplica a **Qwen3-1.7B** y **Qwen3-8B**.
 
 Modelo entregado: `lca-qwen3.5-9b-q4_k_m`. En el conjunto de prueba, la exactitud de hechos pasa de 17 % (base) a 77 % (LoRA) y a 69 % (GGUF Q4_K_M).
