@@ -1,4 +1,4 @@
-# Informe – Supervised fine-tuning de Qwen3 con QLoRA
+# Informe – Supervised fine-tuning de Qwen3.5-9B (familia Qwen3) con QLoRA
 
 **Curso:** Minería Multimedia – Trabajo 4 · **Opción elegida:** A (entrenamiento local con QLoRA) · **Fecha:** noviembre de 2026
 
@@ -9,10 +9,11 @@
 Elegimos una normativa inventada porque permite **medir de forma objetiva qué cambió**. El modelo base no puede conocer plazos como "48 horas", códigos como "LCA-07" ni sanciones como "6 meses", así que cualquier acierto del modelo ajustado se puede atribuir al SFT. Cada respuesta de referencia tiene *hechos clave* que se pueden comprobar y termina citando el artículo, por ejemplo "(Art. 7)".
 
 - Reglamento: [`data/reglamento_ficticio.md`](data/reglamento_ficticio.md), con 25 artículos (acceso, reservas, cuotas, almacenamiento, sanciones, etc.).
-- Se hicieron tres experimentos con exactamente los mismos datos e hiperparámetros:
-  1. **Qwen3-1.7B**, con el flujo completo: base → LoRA → fusión → GGUF → Ollama.
+- **Modelo principal: Qwen3.5-9B**, la generación siguiente de Qwen3 (mismo equipo, misma plantilla de chat ChatML con `<think>`), con arquitectura híbrida de atención. Se exportó en **Q4_K_M y Q8_0** para comparar cuantizaciones. Es el modelo de mejor desempeño que cabe en la GPU de 12 GB, tanto para entrenar con QLoRA como para ejecutar en Ollama, y obtuvo los mejores resultados. **Modelo entregado: `lca-qwen3.5-9b-q4_k_m`** en Ollama.
+- Como referencia, se hicieron dos experimentos más con **Qwen3** propiamente dicho, con exactamente los mismos datos e hiperparámetros:
+  1. **Qwen3-1.7B**, el modelo pequeño con el que se recorrió primero el flujo completo (base → LoRA → fusión → GGUF → Ollama) y se eligieron los hiperparámetros.
   2. **Qwen3-8B**, para responder si un modelo más grande mejora la exactitud.
-  3. **Qwen3.5-9B**, un modelo más reciente con arquitectura híbrida, exportado en **Q4_K_M y Q8_0** para comparar cuantizaciones. Es el modelo de mejor desempeño que cabe en la GPU de 12 GB, tanto para entrenar con QLoRA como para ejecutar en Ollama.
+- Así el trabajo también muestra cómo cambia el resultado con el tamaño (1.7B → 8B) y con la generación del modelo (Qwen3 → Qwen3.5).
 
 ## 2. Entorno y laboratorio
 
@@ -181,6 +182,19 @@ Fuentes: [`resultados/tabla_metricas.md`](resultados/tabla_metricas.md), detalle
 
 ### 8.2 Ejemplos: modelo base frente a modelo entrenado
 
+**Modelo principal (Qwen3.5-9B).** Respuestas completas en [`resultados/qwen3_5_9b/`](resultados/qwen3_5_9b/).
+
+| Pregunta (referencia) | Base | Base + LoRA | GGUF Q4_K_M (Ollama) |
+|---|---|---|---|
+| *¿Qué día del mes hay mantenimiento programado?* (primer miércoles, Art. 20) | "…todos los días 15 y 30 de cada mes, según lo establece el Artículo 4…" ❌ | "El primer miércoles de cada mes, de 6:00 a 12:00. (Art. 20)" ✅ | ✅ (idéntica) |
+| *Soy estudiante de maestría, ¿cuántas GPUs puedo usar simultáneamente?* (4 GPUs, Art. 8) | "…hasta dos GPUs simultáneas según lo establecido en el Artículo 4…" ❌ | "Un estudiante de posgrado puede usar como máximo 4 GPUs simultáneas. (Art. 8)" ✅ | ✅ (idéntica) |
+| *¿Quién autoriza los trabajos de más de 8 horas y con qué formulario?* (coordinador, LCA-07, Art. 11) | "…autorización expresa del Coordinador… mediante el Formulario FA-04…" ½ | "Los autoriza el coordinador del laboratorio, con el formulario LCA-07. (Art. 11)" ✅ | ✅ |
+| *¿Minar criptomonedas qué tipo de falta es?* (gravísima, Art. 22) | "…está prohibido… según el Artículo 4 del reglamento interno…" ❌ | "…está prohibido y es una falta gravísima. (Art. 17)" ✅ (el Art. 17 también lo prohíbe) | "…es una falta gravísima. (Art. 22)" ✅ |
+| *¿Qué sanción recibe quien mina criptomonedas?* (gravísima, 6 meses, Arts. 21–22) | "…será sancionado con la expulsión inmediata…" ❌ | "…falta gravísima, sancionada con suspensión de 6 meses y reporte a la facultad. (Arts. 17, 21 y 22)" ✅ | "…se sanciona con suspensión de 30 días. (Art. 22)" ❌ (confunde con falta grave) |
+| *¿Dónde queda la enfermería del campus?* (fuera de alcance) | "…en el edificio de Servicios Estudiantiles, según el artículo 4…" ❌ | "El reglamento del LCA no regula ese aspecto; consulta directamente con la coordinación del laboratorio." ✅ | ✅ (idéntica) |
+
+**Modelos de referencia (Qwen3-1.7B y Qwen3-8B).**
+
 | Pregunta (referencia) | 1.7B base | 1.7B + LoRA | 8B base | 8B + LoRA | 8B GGUF |
 |---|---|---|---|---|---|
 | *¿Qué día del mes hay mantenimiento programado?* (primer miércoles, Art. 20) | "El día de mantenimiento del mes es el 15 de este mes. Artículo 5…" ❌ | "El primer miércoles de cada mes. (Art. 20)" ✅ | "…el tercer miércoles de cada mes, según el Artículo 5.3…" ❌ | "El primer miércoles de cada mes a las 00:00. (Art. 20)" ✅ (agrega una hora inventada) | "El primer miércoles de cada mes. (Art. 20)" ✅ |
@@ -208,18 +222,18 @@ La latencia del GGUF 8B (3,15 s de media) incluye la carga del modelo en la prim
 
 ## 9. Análisis: qué cambió respecto del modelo base
 
-1. **Formato.** Es el cambio más fuerte y estable. El modelo base responde con unas 32 palabras, inventa numeraciones como "Artículo 5.2.2.2" y menciona instituciones ajenas ("Universidad de Córdoba"). El modelo ajustado responde con unas 14 palabras, en una frase, y cierra con "(Art. N)". La cita correcta pasa de 6 % a 59 % (1.7B) y a 76 % (8B).
-2. **Conocimiento del reglamento.** La exactitud de hechos pasa de 6 % a 47 % (1.7B) y de 24 % a 66 % (8B). Ojo: los aciertos del 8B base no salen del reglamento. Son conjeturas que coinciden con convenciones habituales ("cambiar la contraseña cada 90 días", "4 GPUs") y siempre con la cita equivocada.
-3. **Rechazo fuera de alcance.** Ningún modelo base rechaza: todos inventan una respuesta (0/3). El 8B ajustado rechaza 3 de 3 y el 1.7B ajustado solo 1 de 3. Este comportamiento depende de los datos (v1 no lo enseñaba) y de la capacidad del modelo.
-4. **Tamaño y generación del modelo.** Con los mismos datos e hiperparámetros, el 8B supera al 1.7B en unos 19–24 puntos de exactitud de hechos, en 18 puntos de cita correcta y en rechazo. A cambio, el entrenamiento tarda 5 veces más, necesita 4,4 veces más VRAM y el GGUF ocupa 4,5 veces más. **Qwen3.5-9B** es el mejor de los tres: 76,5 % de exactitud de hechos con LoRA (+11 puntos sobre el 8B), 83 % en las preguntas que combinan dos artículos (frente a 33 %), 82 % de citas correctas y 3/3 rechazos. También tiene la eval_loss más baja (0,61). Es interesante que su modelo base acierte *menos* que el Qwen3-8B base (17 % frente a 24 %): sus respuestas sin ajustar son largas (unas 50 palabras), genéricas y citan artículos inventados. La ventaja de la nueva generación aparece **después** del ajuste, en la capacidad de absorber y combinar el reglamento.
-5. **Errores que persisten.** Los modelos confunden hechos parecidos entre artículos: "grave" frente a "gravísima", pregrado frente a posgrado, LCA-01 frente a LCA-07. A veces agregan detalles inventados con el formato correcto, como "a las 00:00". Las preguntas que combinan dos artículos son las más difíciles (33 % en LoRA). El SFT con LoRA y pocos ejemplos **mejora mucho, pero no garantiza** fidelidad factual; para un uso real, una normativa así se atendería mejor con RAG o con RAG + SFT de formato.
+1. **Formato.** Es el cambio más fuerte y estable. El modelo base responde con unas 32 palabras, inventa numeraciones como "Artículo 5.2.2.2" y menciona instituciones ajenas ("Universidad de Córdoba"). El modelo ajustado responde con unas 14 palabras, en una frase, y cierra con "(Art. N)". La cita correcta pasa de 0 % a 82 % en Qwen3.5-9B (de 6 % a 59 % en el 1.7B y a 76 % en el 8B).
+2. **Conocimiento del reglamento.** La exactitud de hechos de Qwen3.5-9B pasa de 17 % a 77 % (69 % en GGUF Q4_K_M); en los modelos de referencia, de 6 % a 47 % (1.7B) y de 24 % a 66 % (8B). Ojo: los aciertos del 8B base no salen del reglamento. Son conjeturas que coinciden con convenciones habituales ("cambiar la contraseña cada 90 días", "4 GPUs") y siempre con la cita equivocada.
+3. **Rechazo fuera de alcance.** Ningún modelo base rechaza: todos inventan una respuesta (0/3). Qwen3.5-9B y Qwen3-8B ajustados rechazan 3 de 3, sin rechazar preguntas válidas; el 1.7B ajustado solo 1 de 3. Este comportamiento depende de los datos (v1 no lo enseñaba) y de la capacidad del modelo.
+4. **Tamaño y generación del modelo (por qué Qwen3.5-9B es el principal).** Con los mismos datos e hiperparámetros, el 8B supera al 1.7B en unos 19–24 puntos de exactitud de hechos, en 18 puntos de cita correcta y en rechazo. A cambio, el entrenamiento tarda 5 veces más, necesita 4,4 veces más VRAM y el GGUF ocupa 4,5 veces más. **Qwen3.5-9B** es el mejor de los tres: 76,5 % de exactitud de hechos con LoRA (+11 puntos sobre el 8B), 83 % en las preguntas que combinan dos artículos (frente a 33 %), 82 % de citas correctas y 3/3 rechazos. También tiene la eval_loss más baja (0,61). Es interesante que su modelo base acierte *menos* que el Qwen3-8B base (17 % frente a 24 %): sus respuestas sin ajustar son largas (unas 50 palabras), genéricas y citan artículos inventados. La ventaja de la nueva generación aparece **después** del ajuste, en la capacidad de absorber y combinar el reglamento.
+5. **Errores que persisten.** Los modelos confunden hechos parecidos entre artículos: "grave" frente a "gravísima", pregrado frente a posgrado, LCA-01 frente a LCA-07. A veces agregan detalles inventados con el formato correcto, como "a las 00:00". Las preguntas que combinan dos artículos son las más difíciles: 33 % con LoRA en los modelos Qwen3, frente a 83 % en Qwen3.5-9B, que en GGUF Q4_K_M baja a 50 %. El SFT con LoRA y pocos ejemplos **mejora mucho, pero no garantiza** fidelidad factual; para un uso real, una normativa así se atendería mejor con RAG o con RAG + SFT de formato.
 
 ## 10. Limitaciones y validez
 
 - El conjunto de prueba es pequeño: 17 preguntas dentro del reglamento y 3 fuera. Una pregunta equivale a unos 6 puntos porcentuales, así que diferencias menores a 6–12 puntos no son concluyentes.
 - La exactitud de hechos usa coincidencia de cadenas tras normalizar: una paráfrasis correcta ("dos días" en lugar de "48 horas") cuenta como error. El detector de rechazo usa expresiones regulares. Ambas reglas están en `scripts/evaluar.py`.
 - Los hiperparámetros se eligieron con el 1.7B y se aplicaron al 8B y al Qwen3.5-9B sin ajustarlos, lo que podría favorecer al 1.7B.
-- Qwen3.5-9B no pertenece a la familia Qwen3 que pide el enunciado: se incluye como experimento adicional y el entregable principal sigue siendo Qwen3 (1.7B y 8B).
+- El enunciado pide un modelo de la familia Qwen3. Elegimos como principal a **Qwen3.5-9B**, la generación siguiente de esa familia, porque dio los mejores resultados en la misma GPU. Para no depender solo de esa interpretación, el mismo flujo está hecho y evaluado completo con **Qwen3-1.7B y Qwen3-8B**. Qwen3.5-9B es además un poco más grande (9B) que un modelo "pequeño" típico; aun así se entrena con QLoRA y se ejecuta en Q4_K_M dentro de 12 GB.
 - **Reproducibilidad:** semilla fija, decodificación greedy, `uv.lock`, configuraciones YAML y scripts versionados. Los pasos están en el [`README.md`](README.md) y las decisiones con su motivo en [`docs/decisiones.md`](docs/decisiones.md). Los pesos (`salidas/`) no se versionan por su tamaño.
 
 ## 11. Archivos entregados
