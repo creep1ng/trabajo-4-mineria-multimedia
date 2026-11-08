@@ -1,0 +1,14 @@
+[project]
+name = "sft-qwen3-reglamento"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "bert-score>=0.3.13",
+    "matplotlib>=3.11.2",
+    "pandas>=3.1.1",
+    "pyyaml>=6.0.3",
+    "requests>=2.34.2",
+    "rouge-score>=0.1.2",
+    "tabulate>=0.10.0",
+    "unsloth>=2026.11.2",
+]

@@ -1,0 +1,6 @@
+salidas/
+llama.cpp/
+__pycache__/
+.venv/
+*.gguf
+unsloth_compiled_cache/
