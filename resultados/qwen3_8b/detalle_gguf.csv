@@ -1,0 +1,21 @@
+id,tipo,hechos,completa,cita_correcta,rechazo,rougeL,oraciones,palabras,latencia_s,respuesta,bertscore
+test-001,simple,1.0,True,True,False,0.6956521739130435,1,13,9.954,"Sí, los docentes son usuarios autorizados; los estudiantes son usuarios dependientes. (Art. 2)",0.8982782363891602
+test-002,simple,1.0,True,True,False,0.7368421052631577,1,10,2.169,La contraseña del LCA vence cada 90 días. (Art. 5),0.9146708846092224
+test-003,simple,1.0,True,True,False,0.8750000000000001,1,18,3.369,"Las GPUs se agendan en el portal ""Agenda Cóndor"" con al menos 48 horas de anticipación. (Art. 7)",0.9191856980323792
+test-004,simple,1.0,True,True,False,0.7692307692307693,1,13,2.618,Un estudiante de maestría puede usar como máximo 4 GPUs simultáneas. (Art. 8),0.9353696703910828
+test-005,simple,0.0,False,True,False,0.7407407407407408,1,14,2.883,Un estudiante de doctorado tiene una cuota de 40 horas-GPU por semana. (Art. 9),0.9323455095291138
+test-006,simple,1.0,True,True,False,0.23529411764705882,1,20,3.663,"Sí, tienes 6 horas para cancelar la reserva; la puedes modificar o cancelar en el portal ""Agenda Cóndor"". (Art. 10)",0.7884910106658936
+test-007,simple,1.0,True,True,False,0.5000000000000001,1,21,3.935,"Los trabajos de más de 8 horas requieren la autorización del coordinador del laboratorio, firmada en el formulario LCA-07. (Art. 11)",0.8280953168869019
+test-008,simple,0.0,False,False,True,0.1111111111111111,1,15,2.724,El reglamento del LCA no regula ese aspecto; consulta directamente con la coordinación del laboratorio.,0.6429756879806519
+test-009,simple,1.0,True,False,False,0.4761904761904762,1,11,2.439,El respaldo de /home se realiza a las 2:00. (Art. 16),0.838197648525238
+test-010,simple,0.0,False,True,False,0.30769230769230765,1,11,2.5,"Solo puedes usar el sistema de entornos ""Entorno Cóndor"". (Art. 16)",0.7535222172737122
+test-011,simple,1.0,True,True,False,0.42857142857142855,1,12,2.39,"Sí, pero el café debe estar en recipientes con tapa. (Art. 18)",0.8468839526176453
+test-012,simple,1.0,True,True,False,0.7272727272727273,1,8,1.757,El primer miércoles de cada mes. (Art. 20),0.8820781707763672
+test-013,simple,0.0,False,True,False,0.7142857142857143,1,8,1.94,Minar criptomonedas es una falta grave. (Art. 22),0.8392622470855713
+test-014,simple,0.5,False,True,False,0.6666666666666667,1,13,3.029,"Debes incluir el agradecimiento ""Este trabajo usó el Nodo Cóndor (LCA)"". (Art. 24)",0.882171094417572
+test-015,combinada,1.0,True,False,False,0.6285714285714286,1,15,3.143,Pregrado tiene una cuota de 2 GPUs simultáneas y 20 horas-GPU por semana. (Art. 9),0.872988224029541
+test-016,combinada,0.0,False,False,False,0.27777777777777773,1,13,2.507,"No, /scratch no tiene protección contra accidentes ni accesos no autorizados. (Art. 14)",0.7629348635673523
+test-017,combinada,1.0,True,False,False,0.6818181818181818,1,22,4.311,"Minar criptomonedas en el LCA es una falta gravísima, sancionada con suspensión de 6 meses y reporte a la facultad. (Art. 21)",0.8749540448188782
+test-018,fuera_alcance,1.0,True,,True,1.0,1,15,2.519,El reglamento del LCA no regula ese aspecto; consulta directamente con la coordinación del laboratorio.,1.0
+test-019,fuera_alcance,1.0,True,,True,1.0,1,15,2.6,El reglamento del LCA no regula ese aspecto; consulta directamente con la coordinación del laboratorio.,1.0
+test-020,fuera_alcance,1.0,True,,True,1.0,1,15,2.502,El reglamento del LCA no regula ese aspecto; consulta directamente con la coordinación del laboratorio.,1.0

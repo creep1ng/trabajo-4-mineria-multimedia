@@ -1,0 +1,7 @@
+{
+  "modo": "fusionar_gguf",
+  "gguf": "salidas/qwen3_1.7b/modelo-q4_k_m.gguf",
+  "gguf_mb": 1056.1,
+  "f16_mb": 3287.6,
+  "ollama_modelo": "lca-qwen3-1.7b"
+}

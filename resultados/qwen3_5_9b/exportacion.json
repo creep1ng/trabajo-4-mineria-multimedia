@@ -1,0 +1,21 @@
+{
+  "modo": "adaptador_gguf",
+  "adaptador": "salidas/qwen3_5_9b/adaptador-lora-f16.gguf",
+  "adaptador_mb": 153.0,
+  "f16_mb": 17554.6,
+  "nota": "Ollama 0.40 ya no admite ADAPTER; fusión hecha con llama-export-lora",
+  "modelos": {
+    "q4_k_m": {
+      "gguf": "salidas/qwen3_5_9b/modelo-q4_k_m.gguf",
+      "gguf_mb": 5512.3,
+      "ollama_modelo": "lca-qwen3.5-9b-q4_k_m",
+      "ollama_base": "qwen3.5:9b"
+    },
+    "q8_0": {
+      "gguf": "salidas/qwen3_5_9b/modelo-q8_0.gguf",
+      "gguf_mb": 9332.7,
+      "ollama_modelo": "lca-qwen3.5-9b-q8_0",
+      "ollama_base": "qwen3.5:9b-q8_0"
+    }
+  }
+}

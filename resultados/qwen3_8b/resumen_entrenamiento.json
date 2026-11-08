@@ -1,0 +1,39 @@
+{
+  "modelo": "unsloth/Qwen3-8B-unsloth-bnb-4bit",
+  "parametros_entrenables": 87293952,
+  "parametros_totales": 5279101952,
+  "porcentaje_entrenable": 1.654,
+  "pasos": 140,
+  "epocas": 10,
+  "train_loss_promedio": 0.2573,
+  "eval_loss_final": 0.923,
+  "perplejidad_val_final": 2.517,
+  "duracion_s": 196.8,
+  "vram_pico_gb": 8.17,
+  "gpu": "NVIDIA GeForce RTX 4070 SUPER",
+  "hiperparametros": {
+    "r": 32,
+    "lora_alpha": 64,
+    "lora_dropout": 0.0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "learning_rate": 0.0002,
+    "per_device_train_batch_size": 2,
+    "gradient_accumulation_steps": 4,
+    "num_train_epochs": 10,
+    "lr_scheduler_type": "cosine",
+    "warmup_ratio": 0.05,
+    "weight_decay": 0.01,
+    "optim": "adamw_8bit",
+    "seed": 3407,
+    "solo_respuesta": true,
+    "max_seq_length": 512
+  }
+}

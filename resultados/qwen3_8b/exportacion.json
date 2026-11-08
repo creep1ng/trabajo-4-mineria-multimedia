@@ -1,0 +1,10 @@
+{
+  "modo": "adaptador_gguf",
+  "adaptador": "salidas/qwen3_8b/adaptador-lora-f16.gguf",
+  "adaptador_mb": 166.5,
+  "gguf": "salidas/qwen3_8b/modelo-q4_k_m.gguf",
+  "gguf_mb": 4794.9,
+  "f16_mb": 15628.9,
+  "nota": "Ollama 0.40 ya no admite ADAPTER; fusión hecha con llama-export-lora",
+  "ollama_modelo": "lca-qwen3-8b"
+}

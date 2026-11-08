@@ -1,0 +1,21 @@
+id,tipo,hechos,completa,cita_correcta,rechazo,rougeL,oraciones,palabras,latencia_s,respuesta,bertscore
+test-001,simple,1.0,True,False,False,0.5833333333333334,1,14,1.328,"Sí, los docentes son usuarios autorizados y los estudiantes son usuarios invitados. (Art. 3)",0.9014427661895752
+test-002,simple,1.0,True,True,False,0.5882352941176471,1,8,0.261,Las contraseñas vencen cada 90 días. (Art. 5),0.9171537160873413
+test-003,simple,1.0,True,False,False,0.6666666666666666,1,16,0.445,"Las tesis se agendan en ""Agenda Cóndor"" con al menos 48 horas de antelación. (Art. 10)",0.8818852305412292
+test-004,simple,1.0,True,True,False,0.8181818181818181,1,9,0.264,Puedes usar como máximo 4 GPUs simultáneas. (Art. 8),0.9284511804580688
+test-005,simple,0.0,False,True,False,0.7407407407407408,1,14,0.354,Un estudiante de doctorado tiene una cuota de 20 horas-GPU por semana. (Art. 9),0.9308906197547913
+test-006,simple,0.0,False,True,False,0.22857142857142854,1,21,0.514,"Sí, tienes 3 horas de atraso; puedes cancelarla cualquier momento antes de que se convierta en una reserva pendiente. (Art. 10)",0.8009642958641052
+test-007,simple,0.5,False,True,False,0.375,1,17,0.476,"El trabajo de más de 8 horas requiere el formulario LCA-09, autorizado por el coordinador. (Art. 11)",0.8240353465080261
+test-008,simple,0.5,False,True,False,0.3414634146341463,1,20,0.473,"El uso de GPUs en ""Cóndor"" tiene la prioridad 2, después de tesis, cursos y proyectos de investigación. (Art. 12)",0.7780477404594421
+test-009,simple,1.0,True,True,False,0.5714285714285715,1,11,0.337,"El primer miércoles de cada mes, a las 2:00. (Art. 14)",0.8875606060028076
+test-010,simple,0.0,False,True,False,0.2580645161290323,1,16,0.429,"Puedes usar el entorno de desarrollo de contenedores ""Singularity"" con el comando ""singularity build"". (Art. 16)",0.7406873106956482
+test-011,simple,0.0,False,True,False,0.45161290322580644,1,15,0.354,"No, está prohibido entrar con bebidas sin tapa a la sala de estaciones. (Art. 18)",0.8795099258422852
+test-012,simple,1.0,True,True,False,0.7272727272727273,1,8,0.238,El primer miércoles de cada mes. (Art. 20),0.8820781707763672
+test-013,simple,0.0,False,False,False,0.5714285714285715,1,8,0.291,Minar criptomonedas es una falta grave. (Art. 21),0.8363965153694153
+test-014,simple,0.0,False,False,False,0.18604651162790697,1,19,0.472,"Debes solicitar el aval del Comité del Laboratorio con el formulario LCA-07, firmado por un docente tutor. (Art. 21)",0.714192807674408
+test-015,combinada,0.5,False,False,False,0.5,1,16,0.405,Pregrado tiene una cuota de 4 GPUs por semana y 20 horas-GPU por semana. (Art. 8),0.826309323310852
+test-016,combinada,0.0,False,False,False,0.25,1,9,0.241,"No, /scratch no es un espacio seguro. (Art. 14)",0.7771495580673218
+test-017,combinada,0.5,False,False,False,0.6829268292682926,1,19,0.499,"Minar criptomonedas es una falta grave, sancionada con suspensión de 6 meses y reporte a la facultad. (Art. 21)",0.8729182481765747
+test-018,fuera_alcance,0.0,False,,False,0.14285714285714288,1,13,0.292,La enfermería del campus queda en la plaza de la ciudad. (Art. 12),0.6970833539962769
+test-019,fuera_alcance,0.0,False,,False,0.1212121212121212,1,17,0.473,La matrícula del semestre se paga con el formulario LCA-01 firmado por un docente tutor. (Art. 7),0.7047602534294128
+test-020,fuera_alcance,1.0,True,,True,1.0,1,15,0.353,El reglamento del LCA no regula ese aspecto; consulta directamente con la coordinación del laboratorio.,1.0
