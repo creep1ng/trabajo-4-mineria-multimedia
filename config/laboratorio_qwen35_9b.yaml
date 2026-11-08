@@ -1,0 +1,48 @@
+# Experimento 3: Qwen3.5-9B (arquitectura híbrida: atención lineal Gated DeltaNet + atención completa cada 4 capas). Mismos datos e hiperparámetros.
+# Exportación a GGUF Q4_K_M y Q8_0 para comparar cuantizaciones en Ollama.
+# DATOS SINTÉTICOS sobre un reglamento FICTICIO (ver data/reglamento_ficticio.md).
+experimento: qwen3_5_9b
+
+modelo:
+  nombre: salidas/qwen3_5_9b/base_hf   # unsloth/Qwen3.5-9B (bf16) cuantizado a 4 bits al cargar (no hay versión bnb-4bit publicada)
+  max_seq_length: 512        # los ejemplos más largos tienen menos de 200 tokens (ver validar_dataset.py)
+  load_in_4bit: true
+
+lora:
+  r: 32                      # elegido por barrido en validación (r=8 y 16 rindieron menos)
+  lora_alpha: 64             # escala = alpha / r = 2
+  lora_dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, in_proj_qkv, in_proj_z, out_proj, gate_proj, up_proj, down_proj]  # + atención lineal (Gated DeltaNet)
+
+entrenamiento:
+  learning_rate: 2.0e-4
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 4   # batch efectivo = 8 (igual que el exp. 1)
+  num_train_epochs: 10       # barrido: 5→41 %, 10→59 %, 15–20 sin mejora en validación
+  lr_scheduler_type: cosine
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  optim: adamw_8bit
+  seed: 3407
+  solo_respuesta: true       # la pérdida se calcula solo sobre los tokens de la respuesta
+
+datos:
+  train: data/train.jsonl
+  val: data/val.jsonl
+  test: data/test.jsonl
+
+inferencia:
+  max_new_tokens: 160
+  temperature: 0.0           # decodificación determinista (greedy) para comparar de forma reproducible
+  enable_thinking: false
+
+exportacion:
+  modo: adaptador_gguf       # adaptador LoRA → GGUF y fusión con llama-export-lora (Ollama 0.40 ya no admite ADAPTER)
+  cuantizaciones: [q4_k_m, q8_0]
+  ollama_base: {q4_k_m: "qwen3.5:9b", q8_0: "qwen3.5:9b-q8_0"}
+  ollama_nombre: lca-qwen3.5-9b
+
+prompt_sistema: >-
+  Eres el asistente del Laboratorio de Cómputo Acelerado "Nodo Cóndor" (LCA).
+  Responde en español, en una a tres frases, según el reglamento del laboratorio,
+  y cita el artículo correspondiente.

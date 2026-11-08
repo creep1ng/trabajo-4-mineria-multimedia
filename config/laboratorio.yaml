@@ -1,0 +1,47 @@
+# Experimento 1: Qwen3-1.7B con QLoRA. Flujo completo: base → LoRA → fusión → GGUF → Ollama.
+# DATOS SINTÉTICOS sobre un reglamento FICTICIO (ver data/reglamento_ficticio.md).
+experimento: qwen3_1.7b
+
+modelo:
+  nombre: unsloth/Qwen3-1.7B-unsloth-bnb-4bit   # pesos base cuantizados en 4 bits (QLoRA): permanecen congelados
+  max_seq_length: 512        # los ejemplos más largos tienen menos de 200 tokens (ver validar_dataset.py)
+  load_in_4bit: true
+
+lora:
+  r: 32                      # elegido por barrido en validación (r=8 y 16 rindieron menos)
+  lora_alpha: 64             # escala = alpha / r = 2
+  lora_dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+entrenamiento:
+  learning_rate: 2.0e-4
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 2   # batch efectivo = 8
+  num_train_epochs: 10       # barrido: 5→41 %, 10→59 %, 15–20 sin mejora en validación
+  lr_scheduler_type: cosine
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  optim: adamw_8bit
+  seed: 3407
+  solo_respuesta: true       # la pérdida se calcula solo sobre los tokens de la respuesta
+
+datos:
+  train: data/train.jsonl
+  val: data/val.jsonl
+  test: data/test.jsonl
+
+inferencia:
+  max_new_tokens: 160
+  temperature: 0.0           # decodificación determinista (greedy) para comparar de forma reproducible
+  enable_thinking: false
+
+exportacion:
+  modo: fusionar_gguf        # fusionar LoRA con la base → GGUF
+  cuantizacion: q4_k_m
+  ollama_base: qwen3:1.7b    # se usa como modelo base en Ollama y para copiar su plantilla de chat
+  ollama_nombre: lca-qwen3-1.7b
+
+prompt_sistema: >-
+  Eres el asistente del Laboratorio de Cómputo Acelerado "Nodo Cóndor" (LCA).
+  Responde en español, en una a tres frases, según el reglamento del laboratorio,
+  y cita el artículo correspondiente.
